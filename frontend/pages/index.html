@@ -1,289 +1,323 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VatsalyaCare</title>
+
   <style>
-   * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
-}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Quicksand', 'Segoe UI', sans-serif;
+    }
 
-body {
-  background: linear-gradient(to right, #f5f7fa, #c3cfe2);
-  color: #333;
-}
+    body {
+      background: linear-gradient(to right, #f5f7fa, #c3cfe2);
+      color: #333;
+      overflow-x: hidden;
+    }
 
-/* Header */
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 60px;
-  background: rgba(125, 15, 221, 0.7);
-  backdrop-filter: blur(8px);
-  color: white;
-  position: fixed;
-  width: 100%;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 60px;
+      background: rgba(125, 15, 221, 0.85);
+      backdrop-filter: blur(8px);
+      color: white;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 
-.logo {
-  display: flex;
-  align-items: center;
-  font-size: 26px;
-  font-weight: 600;
-}
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 26px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
 
-.logo img {
-  width: 48px;
-  height: 48px;
-  margin-right: 12px;
-  border-radius: 8px;
-}
+    .logo img {
+      width: 48px;
+      height: 48px;
+      margin-right: 12px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
 
-nav button {
-  background: white;
-  color: #7d0fdd;
-  border: none;
-  padding: 10px 18px;
-  margin: 0 6px;
-  font-size: 15px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
 
-nav button:hover {
-  background: #f0f0f0;
-  transform: translateY(-2px);
-}
+    nav button {
+      background: white;
+      color: #7d0fdd;
+      border: none;
+      padding: 10px 18px;
+      font-size: 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
 
-/* Hero Section */
-.hero {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 100vh;
-  padding: 0 8%;
-  margin-top: 100px;
-}
+    nav button:hover {
+      background: #f0e6ff;
+      transform: translateY(-2px);
+    }
 
-.hero-content {
-  flex: 1;
-  animation: fadeIn 1s ease-out;
-}
-* {
-  font-family: 'Quicksand', sans-serif;
-}
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      min-height: 100vh;
+      padding: 130px 8% 60px;
+    }
 
-.hero-content h1 {
-  font-size: 4rem;
-  font-weight: 700;
-  color: #2c2c2c;
-  letter-spacing: 1px;
-}
+    .hero-content {
+      flex: 1;
+      animation: fadeIn 1s ease-out;
+    }
 
-.hero-content h2 {
-  font-size: 2.2rem;
-  font-weight: 600;
-  color: #7d0fdd;
-  margin-bottom: 15px;
-}
+    .hero-content h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 700;
+      color: #2c2c2c;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+    }
 
-.hero-content p {
-  font-size: 1.4rem;
-  line-height: 1.8;
-  color: #444;
-  margin-bottom: 35px;
-}
+    .hero-content h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 600;
+      color: #7d0fdd;
+      margin-bottom: 15px;
+    }
 
+    .hero-content h2::after {
+      content: " 💜";
+      animation: pulse 1.5s infinite;
+    }
 
-.get-started {
-  display: inline-block;
-  padding: 14px 32px;
-  background: linear-gradient(90deg, #7d0fdd, #4b6cb7);
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: 600;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
+    .hero-content p {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      color: #444;
+      margin-bottom: 35px;
+      max-width: 600px;
+    }
 
-.get-started:hover {
-  background: linear-gradient(90deg, #4b6cb7, #7d0fdd);
-  transform: scale(1.05);
-}
+    .get-started {
+      display: inline-block;
+      padding: 14px 32px;
+      background: linear-gradient(90deg, #7d0fdd, #4b6cb7);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
 
-.get-started::after {
-  content: " →";
-  margin-left: 8px;
-  transition: transform 0.3s;
-}
+    .get-started:hover {
+      background: linear-gradient(90deg, #4b6cb7, #7d0fdd);
+      transform: scale(1.05);
+    }
 
-.get-started:hover::after {
-  transform: translateX(5px);
-}
+    .get-started::after {
+      content: " →";
+      margin-left: 8px;
+    }
 
-/* Hero Image */
-.hero-image {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  animation: float 4s ease-in-out infinite;
-}
+    .hero-image {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      animation: float 4s ease-in-out infinite;
+    }
 
-.hero-image img {
-  width: 90%;
-  max-width: 600px;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-}
+    .hero-image img {
+      display: block;
+      width: 100%;
+      max-width: 600px;
+      height: auto;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      transition: transform 0.4s ease;
+    }
 
-/* Footer */
-footer {
-  text-align: center;
-  padding: 20px;
-  background-color: #1c1c1c;
-  color: white;
-  font-size: 14px;
-}
+    .hero-image img:hover {
+      transform: scale(1.02);
+    }
 
-/* Animations */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
-}
+    footer {
+      text-align: center;
+      padding: 25px;
+      background: linear-gradient(to right, #4b6cb7, #182848);
+      color: white;
+      font-size: 15px;
+      box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    }
 
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-15px);
+      }
+    }
 
-/* Responsive */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.6;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
 
-  
-/* Background Accent Shapes */
-body::before {
-  content: "";
-  position: fixed;
-  top: -100px;
-  right: -100px;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, #7d0fdd33, transparent);
-  z-index: 0;
-}
+    body::before {
+      content: "";
+      position: fixed;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, #7d0fdd33, transparent);
+      z-index: -1;
+      pointer-events: none;
+    }
 
-body::after {
-  content: "";
-  position: fixed;
-  bottom: -120px;
-  left: -120px;
-  width: 250px;
-  height: 250px;
-  background: radial-gradient(circle, #4b6cb733, transparent);
-  z-index: 0;
-}
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: -120px;
+      left: -120px;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, #4b6cb733, transparent);
+      z-index: -1;
+      pointer-events: none;
+    }
 
-/* Logo Hover Effect */
-.logo:hover {
-  transform: scale(1.05);
-  transition: transform 0.3s ease;
-}
+    @media (max-width: 900px) {
+      header {
+        padding: 15px 5%;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
 
-/* Hero Image Hover */
-.hero-image img:hover {
-  transform: scale(1.02);
-  transition: transform 0.4s ease;
-}
+      nav {
+        justify-content: center;
+      }
 
-/* Animated Tagline */
-.hero-content h2::after {
-  content: " 💜";
-  animation: pulse 1.5s infinite;
-}
+      .hero {
+        gap: 25px;
+        padding: 170px 5% 50px;
+      }
 
-@keyframes pulse {
-  0% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.2); }
-  100% { opacity: 0.5; transform: scale(1); }
-}
+      .hero-content p {
+        font-size: 1.05rem;
+      }
+    }
 
-/* Enhanced Footer */
-footer {
-  background: linear-gradient(to right, #4b6cb7, #182848);
-  color: #fff;
-  font-size: 15px;
-  padding: 25px;
-  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
-}
+    @media (max-width: 650px) {
+      header {
+        justify-content: center;
+      }
 
-/* Mobile Nav Buttons Stack */
-@media (max-width: 600px) {
-  nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+      .logo {
+        font-size: 23px;
+      }
 
-  nav button {
-    margin: 6px 4px;
-    padding: 8px 14px;
-    font-size: 14px;
-  }
-}
+      nav button {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
 
+      .hero {
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        padding-top: 200px;
+      }
 
+      .hero-content p {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-image img {
+        max-width: 420px;
+      }
+    }
   </style>
 </head>
-<body>
 
-  <!-- Updated Navbar/Header -->
+<body>
   <header>
     <div class="logo">
-      <img src="./logo/logo.jpg" alt="Logo">
-      VatsalyaCare
+      <img src="/pages/logo/logo.jpg" alt="VatsalyaCare Logo">
+      <span>VatsalyaCare</span>
     </div>
+
     <nav>
-      <button onclick="location.href='index.html'">Home</button>
-      <button onclick="location.href='about.html'">About</button>
-      <button onclick="location.href='services.html'">Services</button>
-      <button onclick="location.href='contact.html'">Contact</button>
-      <button onclick="location.href='login.html'">Login</button>
+      <button onclick="location.href='/pages/index.html'">Home</button>
+      <button onclick="location.href='/pages/about.html'">About</button>
+      <button onclick="location.href='/pages/services.html'">Services</button>
+      <button onclick="location.href='/pages/contact.html'">Contact</button>
+      <button onclick="location.href='/pages/login.html'">Login</button>
     </nav>
   </header>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-content">
-      <h2>Welcome to</h2>
-      <h1>VatsalyaCare</h1>
-      <p>Providing quality care and services for the elderly, ensuring safety, comfort, and happiness.</p>
-      <a href="./register.html" class="get-started">Get Started</a>
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <h2>Welcome to</h2>
+        <h1>VatsalyaCare</h1>
+        <p>
+          Providing quality care and services for the elderly,
+          ensuring safety, comfort, and happiness.
+        </p>
+        <a href="/pages/register.html" class="get-started">Get Started</a>
+      </div>
 
-    </div>
-    <div class="hero-image">
-      <img src="./img/image.png">
-    </div>
-  </section>
+      <div class="hero-image">
+        <img
+          src="/pages/img/image.png"
+          alt="Elderly care and companionship"
+        >
+      </div>
+    </section>
+  </main>
 
-  <!-- Scroll Section (example content kept) -->
-  
-  <!-- Footer -->
   <footer>
     &copy; 2025 VatsalyaCare. All Rights Reserved.
   </footer>
 
-<script src="../assets/js/panicListener.js"></script>
-
+  <script src="/assets/js/panicListener.js"></script>
 </body>
 </html>
+```
