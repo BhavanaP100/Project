@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Caregiver | VatsalyaCare</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 400px;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 18px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 80px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background-color: #388E3C;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Edit Caregiver</h2>
+    <form id="editForm" enctype="multipart/form-data">
+      <label>Caregiver ID</label>
+      <input type="text" name="caregiverId" id="caregiverId" readonly />
+
+      <label>Name</label>
+      <input type="text" name="name" id="name" required />
+
+      <label>Gender</label>
+      <select name="gender" id="gender" required>
+        <option value="">Select Gender</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
+
+      <label>Contact</label>
+      <input type="text" name="contact" id="contact" required />
+
+      <label>Email</label>
+      <input type="email" name="email" id="email" required />
+
+      <label>Address</label>
+      <textarea name="address" id="address" required></textarea>
+
+      <label>Shift</label>
+      <select name="shift_time" id="shift_time" required>
+        <option value="">Select Shift</option>
+        <option>Morning</option>
+        <option>Evening</option>
+      </select>
+
+      <label>Shift Hours</label>
+      <input type="text" name="shift_hour" id="shift_hour" required />
+
+      <label>Assigned Members</label>
+      <select name="assignedMembers" id="assignedMembers" multiple></select>
+
+      <label>Upload New Photo (optional)</label>
+      <input type="file" name="photo" accept="image/*" />
+
+      <input type="hidden" name="homeId" id="homeId" />
+
+      <button type="submit">Update Caregiver</button>
+    </form>
+  </div>
+
+  <script>
+    const caregiverId = new URLSearchParams(window.location.search).get('id');
+    const homeId = localStorage.getItem('homeId');
+    if (!homeId) {
+      alert("Missing homeId. Please login again.");
+      window.location.href = '../login.html';
+    }
+    document.getElementById('homeId').value = homeId;
+
+    async function loadMembers() {
+      const res = await fetch(`http://localhost:3000/api/members?homeId=${homeId}`);
+      const members = await res.json();
+      const dropdown = document.getElementById('assignedMembers');
+      members.forEach(m => {
+        const option = document.createElement('option');
+        option.value = m.memberId;
+        option.textContent = `${m.memberId} - ${m.name}`;
+        dropdown.appendChild(option);
+      });
+    }
+
+    async function fetchCaregiver() {
+      const res = await fetch(`http://localhost:3000/api/caregivers/${caregiverId}`);
+      const data = await res.json();
+
+      document.getElementById('caregiverId').value = data.caregiverId || caregiverId;
+      document.getElementById('name').value = data.name;
+      document.getElementById('gender').value = data.gender;
+      document.getElementById('contact').value = data.contact;
+      document.getElementById('email').value = data.email;
+      document.getElementById('address').value = data.address;
+      document.getElementById('shift_time').value = data.shift_time;
+      document.getElementById('shift_hour').value = data.shift_hour;
+
+      const assigned = data.assignedMembers || [];
+      const dropdown = document.getElementById('assignedMembers');
+      assigned.forEach(id => {
+        const match = Array.from(dropdown.options).find(opt => opt.value === id);
+        if (match) match.selected = true;
+      });
+    }
+
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      const selected = Array.from(document.getElementById('assignedMembers').selectedOptions).map(opt => opt.value);
+      formData.set('assignedMembers', selected.join(','));
+
+      const res = await fetch(`http://localhost:3000/api/caregivers/${caregiverId}`, {
+        method: 'PUT',
+        body: formData
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        alert("Caregiver updated successfully.");
+        window.location.href = "caregiver.html";
+      } else {
+        alert("Update failed.");
+      }
+    });
+
+    await loadMembers();
+    await fetchCaregiver();
+  </script>
+
+</body>
+</html>

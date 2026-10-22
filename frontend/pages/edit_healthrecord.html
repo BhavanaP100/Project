@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Health Record | VatsalyaCare</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 420px;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 18px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 80px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background-color: #388E3C;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Edit Health Record</h2>
+    <form id="editForm" enctype="multipart/form-data">
+      <label>Member ID *</label>
+      <input type="text" name="memberId" id="memberId" readonly />
+
+      <label>Age</label>
+      <input type="number" name="age" id="age" />
+
+      <label>Weight (kg)</label>
+      <input type="number" name="weight" step="0.1" id="weight" />
+
+      <label>Blood Group</label>
+      <select name="bloodGroup" id="bloodGroup">
+        <option value="">Select Blood Group</option>
+        <option value="A+">A+</option>
+        <option value="A-">A-</option>
+        <option value="B+">B+</option>
+        <option value="B-">B-</option>
+        <option value="AB+">AB+</option>
+        <option value="AB-">AB-</option>
+        <option value="O+">O+</option>
+        <option value="O-">O-</option>
+      </select>
+
+      <label>BP</label>
+      <input type="text" name="bp" placeholder="e.g., 120/80" id="bp" />
+
+      <label>Upload BP Report</label>
+      <input type="file" name="bpReport" />
+
+      <label>Sugar</label>
+      <input type="text" name="sugar" placeholder="e.g., 90 mg/dL" id="sugar" />
+
+      <label>Upload Sugar Report</label>
+      <input type="file" name="sugarReport" />
+
+      <label>Health Issues</label>
+      <textarea name="healthIssues" id="healthIssues"></textarea>
+
+      <label>Treatment</label>
+      <textarea name="treatment" id="treatment"></textarea>
+
+      <button type="submit">Save Record</button>
+    </form>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    const memberIdParam = urlParams.get('memberId');
+
+    async function loadRecord() {
+      const homeId = localStorage.getItem("homeId");
+      const res = await fetch(`http://localhost:3000/api/health?homeId=${homeId}`);
+      const records = await res.json();
+      let record = null;
+
+      if (id) {
+        record = records.find(r => r._id === id);
+      } else if (memberIdParam) {
+        record = records.find(r => r.memberId === memberIdParam);
+      }
+
+      document.getElementById('memberId').value = record?.memberId || memberIdParam || '';
+      document.getElementById('age').value = record?.age || '';
+      document.getElementById('weight').value = record?.weight || '';
+      document.getElementById('bloodGroup').value = record?.bloodGroup || '';
+      document.getElementById('bp').value = record?.bp || '';
+      document.getElementById('sugar').value = record?.sugar || '';
+      document.getElementById('healthIssues').value = record?.healthIssues || '';
+      document.getElementById('treatment').value = record?.treatment || '';
+    }
+
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const homeId = localStorage.getItem("homeId");
+      formData.append("homeId", homeId);
+
+      let endpoint = `http://localhost:3000/api/healthrecords`;
+      let method = "POST";
+
+      if (id) {
+        endpoint = `${endpoint}/${id}`;
+        method = "PUT";
+      }
+
+      const res = await fetch(endpoint, {
+        method,
+        body: formData
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert("Record saved successfully.");
+        window.location.href = "health_records.html";
+      } else {
+        alert("Failed to save record.");
+      }
+    });
+
+    loadRecord();
+  </script>
+
+</body>
+</html>

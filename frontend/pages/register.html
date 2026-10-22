@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Registration | VatsalyaCare</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f0f2f5;
+    }
+
+    .container {
+      width: 800px;
+      display: flex;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .form-section {
+      flex: 1;
+      padding: 20px;
+    }
+
+    .form-section h2 {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      color: #7b68ee;
+    }
+
+    .form-section input {
+      width: 100%;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+
+    .form-section button {
+      width: 100%;
+      padding: 15px;
+      background-color: #7b68ee;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    .form-section button:hover {
+      background-color: #6a5acd;
+    }
+
+    .welcome-section {
+      flex: 1;
+      background-color: #7b68ee;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 50px;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-top-left-radius: 150px;
+      border-bottom-left-radius: 150px;
+    }
+
+    .welcome-section h2 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .welcome-section p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .welcome-section button {
+      padding: 12px 25px;
+      background-color: white;
+      color: #7b68ee;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="form-section">
+      <h2>Admin Registration</h2>
+      <input type="text" id="homeId" placeholder="Home ID" />
+      <input type="text" id="name" placeholder="Name" />
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" />
+      <button onclick="register()">Register</button>
+    </div>
+
+    <div class="welcome-section">
+      <h2>Welcome Back!</h2>
+      <p>Already have an account?</p>
+      <button onclick="window.location.href='login.html'">Login</button>
+    </div>
+  </div>
+
+  <script>
+    async function register() {
+      const homeId = document.getElementById('homeId').value.trim();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (!homeId || !name || !email || !password || !confirmPassword) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:3000/api/admins/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ homeId, name, email, password })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          alert("Registration successful!");
+          window.location.href = 'login.html';
+        } else {
+          alert(data.message || "Registration failed.");
+        }
+      } catch (err) {
+        alert("Server error. Please try again.");
+        console.error(err);
+      }
+    }
+  </script>
+
+</body>
+</html>

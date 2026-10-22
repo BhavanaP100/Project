@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard | VatsalyaCare</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: url(https://theappeal.org/wp-content/uploads/2022/07/amisha-nakhwa-9USlkk5z6Mg-unsplash-scaled.jpg) no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Segoe UI', sans-serif;
+      overflow-x: hidden;
+      color: #333;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      z-index: 1000;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+      border-radius: 8px;
+    }
+
+    nav button {
+      background-color: white;
+      color: #4CAF50;
+      border: none;
+      padding: 10px 20px;
+      margin-left: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    nav button:hover {
+      background-color: #e8f5e9;
+      transform: scale(1.05);
+    }
+
+    .main-content {
+      margin-top: 120px;
+      text-align: center;
+      padding: 40px 20px;
+      animation: fadeIn 1s ease-in;
+    }
+
+    .main-content h1 {
+      font-size: 3rem;
+      color: white;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    }
+
+    .main-content p {
+      font-size: 1.2rem;
+      color: #fff;
+      margin-bottom: 50px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+    }
+
+    .summary {
+      margin-bottom: 40px;
+      color: white;
+      text-align: center;
+    }
+
+    .boxes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      padding: 0 40px;
+    }
+
+    .box {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      text-decoration: none;
+      color: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 180px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .box:hover {
+      transform: rotateY(10deg) scale(1.05);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    .box::before {
+      content: '';
+      position: absolute;
+      width: 150%;
+      height: 150%;
+      background: linear-gradient(45deg, rgba(255,255,255,0.2), rgba(0,0,0,0.05));
+      transform: rotate(45deg);
+      top: -80%;
+      left: -30%;
+      transition: all 0.5s ease;
+      z-index: 0;
+    }
+
+    .box:hover::before {
+      top: -30%;
+      left: -10%;
+    }
+
+    .box i {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      z-index: 1;
+      color: #222;
+      text-shadow: 0 0 8px #00bcd4;
+    }
+
+    .box span {
+      font-size: 1.1rem;
+      z-index: 1;
+      color: #222;
+    }
+
+    footer {
+      margin-top: 60px;
+      text-align: center;
+      font-size: 1rem;
+      color: #eee;
+      text-shadow: 1px 1px 3px black;
+      padding-bottom: 30px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-content h1 {
+        font-size: 2rem;
+      }
+
+      .main-content p {
+        font-size: 1rem;
+      }
+    }
+      #panicAlertBox {
+      background-color: red;
+      color: white;
+      font-weight: bold;
+      padding: 15px;
+      margin: 20px auto;
+      border-radius: 10px;
+      width: fit-content;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      display: none;
+    }
+  </style>
+</head>
+
+
+  <header>
+    <div class="logo">
+      <img src="https://i.pinimg.com/736x/57/fa/a1/57faa1306c5a02bbe7f50dc1fa5a6f93.jpg" alt="Logo">
+      VatsalyaCare
+    </div>
+    <nav>
+      <button id="dashboardBtn">Dashboard</button>
+      <button id="helpBtn">Help</button>
+      <button onclick="logout()">Logout</button>
+    </nav>
+  </header>
+
+  <div class="main-content">
+    <h1>Welcome to Our Family!</h1>
+    <p id="welcomeText">Hello Admin! Here's your control panel.</p>
+
+    <div class="summary">
+      <h2>Home Summary</h2>
+      <p id="memberCount">Members: loading...</p>
+      <p id="caregiverCount">Caregivers: loading...</p>
+      <div id="reminderList">
+        <p>Upcoming Reminders:</p>
+        <ul style="list-style: none; padding: 0;" id="remindersUl"></ul>
+      </div>
+    </div>
+      <!-- ✅ Panic Alert Box -->
+    <div id="panicAlertBox">Panic alert triggered!</div>
+    <div class="boxes">
+      <a id="membersLink" class="box"><i class="fas fa-users"></i><span>Members</span></a>
+      <a id="healthLink" class="box"><i class="fas fa-notes-medical"></i><span>Health Records</span></a>
+      <a id="caregiverLink" class="box"><i class="fas fa-hands-helping"></i><span>Care Takers</span></a>
+      <a id="familyLink" class="box"><i class="fas fa-phone-square"></i><span>Family Contacts</span></a>
+      <a id="emergencyLink" class="box"><i class="fas fa-running"></i><span>Emergency Contact</span></a>
+      <a id="reminderLink" class="box"><i class="fas fa-bell"></i><span>Reminders</span></a>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 VatsalyaCare. All rights reserved.</p>
+  </footer>
+<script>
+  const homeId = localStorage.getItem('homeId');
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+  if (!isLoggedIn || !homeId) {
+    window.location.href = 'login.html';
+  }
+
+  document.getElementById('dashboardBtn').onclick = () => {
+    window.location.href = 'dashboard.html';
+  };
+  document.getElementById('helpBtn').onclick = () => {
+    window.location.href = 'help.html';
+  };
+  document.getElementById('membersLink').href = 'members.html';
+  document.getElementById('healthLink').href = 'health_records.html';
+  document.getElementById('caregiverLink').href = 'caregiver.html';
+  document.getElementById('familyLink').href = 'family_contact.html';
+  document.getElementById('emergencyLink').href = 'emergency_contact.html';
+  document.getElementById('reminderLink').href = 'reminders.html';
+
+  function logout() {
+  localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('homeId');
+  window.location.href = '/'; // ✅ This hits the root route
+}
+
+
+  fetch(`/api/members/dashboard-summary?homeId=${homeId}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        document.getElementById('memberCount').textContent = `Members: ${data.memberCount}`;
+        document.getElementById('caregiverCount').textContent = `Caregivers: ${data.caregiverCount}`;
+
+        const remindersUl = document.getElementById('remindersUl');
+        remindersUl.innerHTML = '';
+        if (data.upcomingReminders.length === 0) {
+          remindersUl.innerHTML = '<li>No upcoming reminders</li>';
+        } else {
+          data.upcomingReminders.forEach(reminder => {
+            const li = document.createElement('li');
+            li.textContent = `${reminder.title} on ${new Date(reminder.date).toLocaleDateString()}`;
+            remindersUl.appendChild(li);
+          });
+        }
+      } else {
+        document.getElementById('memberCount').textContent = 'Members: error';
+        document.getElementById('caregiverCount').textContent = 'Caregivers: error';
+      }
+    })
+    .catch(err => {
+      console.error('Dashboard summary error:', err);
+      document.getElementById('memberCount').textContent = 'Members: error';
+      document.getElementById('caregiverCount').textContent = 'Caregivers: error';
+    });
+   setInterval(() => {
+  fetch('/api/panic/status')
+    .then(res => res.json())
+    .then(data => {
+      const alertBox = document.getElementById('panicAlertBox');
+      if (data.panic === true) {
+        alertBox.innerText = '🚨 ' + (data.message || 'Emergency! Panic alert triggered!');
+
+        alertBox.style.display = 'block';
+      } else {
+        alertBox.style.display = 'none';
+      }
+    })
+    .catch(err => {
+      console.error('Panic alert fetch error:', err);
+    });
+}, 3000);
+
+</script>
+<script src="../assets/js/panicListener.js"></script>
+
+</html>

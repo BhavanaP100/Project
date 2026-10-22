@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Reminder | VatsalyaCare</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 420px;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 18px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 80px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background-color: #388E3C;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Edit Reminder</h2>
+    <form id="editForm">
+      <label>Member ID *</label>
+      <input type="text" name="memberId" id="memberId" readonly />
+
+      <label>Title</label>
+      <input type="text" name="title" id="title" />
+
+      <label>Description</label>
+      <textarea name="description" id="description"></textarea>
+
+      <label>Reminder Date *</label>
+      <input type="date" name="reminderDate" id="reminderDate" />
+
+      <label>Status</label>
+      <select name="status" id="status">
+        <option value="Pending">Pending</option>
+        <option value="Completed">Completed</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+
+      <button type="submit">Save Reminder</button>
+    </form>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    const memberIdParam = urlParams.get('memberId');
+
+    async function loadReminder() {
+      const homeId = localStorage.getItem("homeId");
+      const res = await fetch(`http://localhost:3000/api/reminders?homeId=${homeId}`);
+      const reminders = await res.json();
+      let reminder = null;
+
+      if (id) {
+        reminder = reminders.find(r => r._id === id);
+      } else if (memberIdParam) {
+        reminder = reminders.find(r => r.memberId === memberIdParam);
+      }
+
+      document.getElementById('memberId').value = reminder?.memberId || memberIdParam || '';
+      document.getElementById('title').value = reminder?.title || '';
+      document.getElementById('description').value = reminder?.description || '';
+      document.getElementById('reminderDate').value = reminder?.reminderDate?.slice(0, 10) || '';
+      document.getElementById('status').value = reminder?.status || '';
+    }
+
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const homeId = localStorage.getItem("homeId");
+      formData.append("homeId", homeId);
+
+      let endpoint = `http://localhost:3000/api/reminders`;
+      let method = "POST";
+
+      if (id) {
+        endpoint = `${endpoint}/${id}`;
+        method = "PUT";
+      }
+
+      const res = await fetch(endpoint, {
+        method,
+        body: formData
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert("Reminder saved successfully.");
+        window.location.href = "reminders.html";
+      } else {
+        alert("Failed to save reminder.");
+      }
+    });
+
+    loadReminder();
+  </script>
+
+</body>
+</html>

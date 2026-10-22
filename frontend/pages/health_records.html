@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Health Records | VatsalyaCare</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    
+     body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 50px;
+            background-color: #bc29ed;
+            color: white;
+        }
+
+   
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fffefe;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+            border-radius: 5px;
+        }
+nav button {
+  background-color: white;
+  color: #4CAF50;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 8px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: background 0.3s, transform 0.2s;
+}
+
+nav button:hover {
+  background-color: #e8f5e9;
+  transform: scale(1.05);
+}
+
+   
+    .container {
+      width: 85%;
+      margin: 40px auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 14px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #212121;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .edit-btn, .delete-btn {
+      padding: 8px 16px;
+      font-size: 14px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .edit-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .edit-btn:hover {
+      background-color: #388E3C;
+    }
+
+    .delete-btn {
+      background-color: #f44336;
+      color: white;
+    }
+
+    .delete-btn:hover {
+      background-color: #B71C1C;
+    }
+  
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="logo/logo.jpg" alt="Logo">
+      VatsalyaCare
+    </div>
+    <nav>
+      <button onclick="location.href='dashboard.html'">Dashboard</button>
+      <button onclick="location.href='login.html'">Logout</button>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h1>Health Records</h1>
+
+    <table>
+      <tr>
+        <th>Member ID</th>
+        <th>Age</th>
+        <th>Weight</th>
+        <th>Blood Group</th>
+        <th>Bp</th>
+        <th>BP Report</th>
+        <th>Sugar</th>
+        <th>Sugar Report</th>
+        <th>Health Issues</th>
+        <th>Treatment</th>
+        <th>Actions</th>
+      </tr>
+    </table>
+  </div>
+
+  <script>
+    async function deleteHealthRecord(id) {
+      if (!id) {
+        alert("No record to delete.");
+        return;
+      }
+
+      if (confirm("Are you sure you want to delete this record?")) {
+        const res = await fetch(`http://localhost:3000/api/healthrecords/${id}`, {
+          method: 'DELETE'
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert("Record deleted successfully.");
+          location.reload();
+        } else {
+          alert("Failed to delete record.");
+        }
+      }
+    }
+
+    async function fetchHealthRecords() {
+      const homeId = localStorage.getItem("homeId");
+      if (!homeId) {
+        alert("homeId not found. Please login again.");
+        return;
+      }
+
+const res = await fetch(`http://localhost:3000/api/health?homeId=${homeId}`);
+
+      const records = await res.json();
+      const table = document.querySelector("table");
+
+      records.forEach(hr => {
+        if (!hr.memberId) return; // ✅ Ensure memberId exists
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${hr.memberId}</td>
+          <td>${hr.age || '-'}</td>
+          <td>${hr.weight || '-'}</td>
+          <td>${hr.bloodGroup || '-'}</td>
+          <td>${hr.bp || '-'}</td>
+          <td>${hr.bpReport ? `<a href="${hr.bpReport}" target="_blank">Download</a>` : '-'}</td>
+          <td>${hr.sugar || '-'}</td>
+          <td>${hr.sugarReport ? `<a href="${hr.sugarReport}" target="_blank">Download</a>` : '-'}</td>
+          <td>${hr.healthIssues || '-'}</td>
+          <td>${hr.treatment || '-'}</td>
+          <td>
+            <a href="edit_healthrecord.html?memberId=${hr.memberId}" class="edit-btn">Edit</a>
+            <a href="#" onclick="deleteHealthRecord('${hr._id || ''}')" class="delete-btn">Delete</a>
+          </td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    fetchHealthRecords();
+  </script>
+
+</body>
+</html>

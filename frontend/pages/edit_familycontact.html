@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Family Contact | VatsalyaCare</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 420px;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 18px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background-color: #388E3C;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Edit Family Contact</h2>
+    <form id="editForm">
+      <label>Member ID *</label>
+      <input type="text" name="memberId" id="memberId" readonly />
+
+      <label>Family Member Name</label>
+      <input type="text" name="memberName" id="memberName" />
+
+      <label>Relation</label>
+      <input type="text" name="relation" id="relation" />
+
+      <label>Phone</label>
+      <input type="text" name="phone" id="phone" />
+
+      <label>Email</label>
+      <input type="email" name="email" id="email" />
+
+      <label>Contact Date</label>
+      <input type="date" name="contactDate" id="contactDate" />
+
+      <button type="submit">Save Contact</button>
+    </form>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    const memberIdParam = urlParams.get('memberId');
+
+    async function loadContact() {
+      const homeId = localStorage.getItem("homeId");
+      const res = await fetch(`http://localhost:3000/api/familycontacts?homeId=${homeId}`);
+      const contacts = await res.json();
+      let contact = null;
+
+      if (id) {
+        contact = contacts.find(c => c._id === id);
+      } else if (memberIdParam) {
+        contact = contacts.find(c => c.memberId === memberIdParam);
+      }
+
+      document.getElementById('memberId').value = contact?.memberId || memberIdParam || '';
+      document.getElementById('memberName').value = contact?.memberName || '';
+      document.getElementById('relation').value = contact?.relation || '';
+      document.getElementById('phone').value = contact?.phone || '';
+      document.getElementById('email').value = contact?.email || '';
+      document.getElementById('contactDate').value = contact?.contactDate?.slice(0, 10) || '';
+    }
+
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const homeId = localStorage.getItem("homeId");
+      formData.append("homeId", homeId);
+
+      let endpoint = `http://localhost:3000/api/familycontacts`;
+      let method = "POST";
+
+      if (id) {
+        endpoint = `${endpoint}/${id}`;
+        method = "PUT";
+      }
+
+      const res = await fetch(endpoint, {
+        method,
+        body: formData
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert("Contact saved successfully.");
+        window.location.href = "family_contact.html";
+      } else {
+        alert("Failed to save contact.");
+      }
+    });
+
+    loadContact();
+  </script>
+
+</body>
+</html>

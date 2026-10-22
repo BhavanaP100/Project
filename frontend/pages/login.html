@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Page</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f0f2f5;
+    }
+
+    .container {
+      width: 800px;
+      display: flex;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .form-section {
+      flex: 1;
+      padding: 50px;
+    }
+
+    .form-section h2 {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+
+    .form-section input {
+      width: 100%;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+
+    .form-section button {
+      width: 100%;
+      padding: 15px;
+      background-color: #7b68ee;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    .welcome-section {
+      flex: 1;
+      background-color: #7b68ee;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 50px;
+      position: relative;
+      border-top-left-radius: 150px;
+      border-bottom-left-radius: 150px;
+      overflow: hidden;
+    }
+
+    .welcome-section::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: #9575cd;
+      border-radius: 50%;
+      top: -150px;
+      right: -200px;
+    }
+
+    .welcome-section h2,
+    .welcome-section p,
+    .welcome-section button {
+      position: relative;
+      z-index: 1;
+    }
+
+    .welcome-section h2 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .welcome-section p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .welcome-section button {
+      padding: 12px 25px;
+      background-color: white;
+      color: #7b68ee;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-section">
+      <h2>Login</h2>
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+    </div>
+
+    <div class="welcome-section">
+      <h2>New Here?</h2>
+      <p>Create an account to get started</p>
+      <button onclick="location.href='register.html'">Register</button>
+    </div>
+  </div>
+<script>
+  async function login() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!email || !password) {
+      alert("Please enter both email and password.");
+      return;
+    }
+
+    try {
+      const res = await fetch('http://localhost:3000/api/admins/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+      if (data.success && (data.homeId || data.admin?.homeId)) {
+        localStorage.setItem('homeId', data.homeId || data.admin?.homeId);
+        localStorage.setItem('isLoggedIn', true);
+        alert("Login successful!");
+        window.location.href = 'dashboard.html';
+      } else {
+        alert(data.message || "Login failed. Please check your credentials.");
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      alert("Server error during login.");
+    }
+  }
+</script>
+
+  
+</body>
+</html>

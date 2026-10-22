@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Member | VatsalyaCare</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 60px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    img {
+      max-height: 80px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Edit Member</h2>
+    <form id="editForm" enctype="multipart/form-data">
+      <input type="hidden" name="memberId" id="memberId" />
+
+      <label>Name</label>
+      <input type="text" name="name" id="name" />
+
+      <label>Date of Birth</label>
+      <input type="date" name="dob" id="dob" />
+
+      <label>Age</label>
+      <input type="number" name="age" id="age" />
+
+      <label>Gender</label>
+      <select name="gender" id="gender">
+        <option value="">Select</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
+
+      <label>Phone</label>
+      <input type="text" name="phone" id="phone" />
+
+      <label>Email</label>
+      <input type="email" name="email" id="email" />
+
+      <label>Current Photo</label>
+      <img id="currentPhoto" src="" alt="Member Photo" />
+
+      <label>Upload New Photo</label>
+      <input type="file" name="photo" accept="image/*" />
+
+      <button type="submit">Update Member</button>
+    </form>
+  </div>
+
+<script>
+  const memberId = new URLSearchParams(window.location.search).get('id');
+  const homeId = localStorage.getItem('homeId');
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+  if (!isLoggedIn || !homeId) {
+    alert("Session expired. Please login again.");
+    window.location.href = 'login.html';
+  }
+
+  async function fetchMember() {
+    const res = await fetch(`/api/members/${memberId}`);
+    const data = await res.json();
+
+    document.getElementById('memberId').value = data.memberId;
+    document.getElementById('name').value = data.name;
+
+    // ✅ Format DOB correctly for <input type="date">
+    const dob = new Date(data.dob);
+    document.getElementById('dob').value = dob.toISOString().slice(0, 10);
+
+    document.getElementById('age').value = data.age;
+    document.getElementById('gender').value = data.gender;
+    document.getElementById('phone').value = data.phone;
+    document.getElementById('email').value = data.email;
+    document.getElementById('currentPhoto').src = data.photoUrl;
+  }
+
+  document.getElementById('editForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    formData.append('homeId', homeId);
+
+    const res = await fetch(`/api/members/${memberId}`, {
+      method: 'PUT',
+      body: formData
+    });
+
+    const result = await res.json();
+    if (result.success) {
+      alert("Member updated successfully.");
+      window.location.href = "members.html";
+    } else {
+      alert(result.message || "Update failed.");
+    }
+  });
+
+  fetchMember();
+</script>
+
+</body>
+</html>
